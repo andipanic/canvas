@@ -12,22 +12,25 @@ class Canvas:
         """Create the screen and set the max width
         and max height of the screen in width and height"""
         self.screen = curses.initscr()
-        self.width = int(subprocess.check_output(['tput','cols']))
-        self.height = int(subprocess.check_output(['tput','lines']))
+        self.height, self.width = self.screen.getmaxyx()
 
     def start(self):
         """Set up the curses env and put a boarder
         around it... might remove boarder later. """
         curses.noecho()
         curses.cbreak()
+        curses.curs_set(0)
         self.screen.keypad(True)
         self.screen.clear()
-        self.screen.border()
 
     def __call__(self):
         """Not sure if I should use __call__ here
         but it is a very simple way to get the screen."""
         return self.screen
+
+    def window(nlines, ncols, begin_y=0, begin_x=0):
+        window = curses.newwin(nlines, ncols, begin_y, begin_x)
+        return window
 
     def stop(self):
         """Clean up ncurses state settings and reset
@@ -44,13 +47,15 @@ def main():
     board = Canvas()
     board.start()
     c = 0
-    while c is not ord('q'):
+    while 1:
         scr = board()
         c = scr.getch()
+        if c is ord('q'):
+            board.stop()
+            break
         scr.addch(5,5,str(chr(c)))
         scr.refresh()
 
-    board.end()
 
 if __name__ == '__main__':
     main()
