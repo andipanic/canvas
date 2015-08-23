@@ -14,13 +14,18 @@ class Pollock:
         self.board = board
         self.screen = board()
         self._spots = set((y,x) for y in range(0,self.board.height - 3)
-                          for x in range(0,self.board.width - 3))
+                          for x in range(0,self.board.width - 1))
         self.chars = string.printable[:-5]
 
         curses.start_color()
         curses.use_default_colors()
+        self.counti = 0
+        self.countx = 0
         for i in range(0,curses.COLORS):
-            curses.init_pair(i+1, i, -1)
+            curses.init_pair(i+1,i, -1)
+            for x in range(0,curses.COLORS):
+                if x != i:
+                    curses.init_pair(i+x+1, i, x)
 
     def add_footer(self,msg):
         message_length = len(msg)
@@ -36,11 +41,10 @@ class Pollock:
         num_spots = random.randint(0,int(len(self._spots)/18))
         spots = self.get_random_spots(num_spots)
         char = random.choice(self.chars)
-        color = random.choice(range(0,curses.COLORS))
+        color = random.choice(range(0,31))
         for spot in spots:
             y,x = spot
             self.screen.addstr(y,x,char,curses.color_pair(color))
-        
 
     def start(self):
         self.board.start()

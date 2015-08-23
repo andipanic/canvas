@@ -36,8 +36,9 @@ class Canvas:
         """Clean up ncurses state settings and reset
         the terminal back to the way it was."""
         self.screen.clear()
-        curses.nocbreak()
         self.screen.keypad(False)
+        curses.nocbreak()
+        curses.curs_set(1)
         curses.echo()
         curses.endwin()
 
