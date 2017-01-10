@@ -37,8 +37,8 @@ class Canvas:
         the terminal back to the way it was."""
         self.screen.clear()
         self.screen.keypad(False)
-        curses.nocbreak()
         curses.curs_set(1)
+        curses.nocbreak()
         curses.echo()
         curses.endwin()
 
@@ -50,7 +50,11 @@ def main():
     c = 0
     while 1:
         scr = board()
-        c = scr.getch()
+        try:
+            c = scr.getch()
+        except KeyboardInterrupt:
+            board.stop()
+            break
         if c is ord('q'):
             board.stop()
             break
